@@ -15,9 +15,76 @@ from telegram import Bot
 
 import config
 
+from ib_insync import *
 
-def send_alert(data):
-    msg = data["msg"].encode("latin-1", "backslashreplace").decode("unicode_escape")
+PORT = 7497
+ACCOUNT_ID =  "DU5981186"
+
+
+def price_round(x, target):
+    # print("Rounding:", x, target)
+    target = float(1/target)
+    rounded = round(x*target)/target
+    return rounded
+
+def execute_ib_trade(ib:IB, data):
+    # Extract the relevant information from the alert data
+    symbol = data['symbol']
+    action = data['action']
+    orderType = data['type']
+    quantity = int(data['quantity'])
+    lmtPrice = float(data['limitPrice'])
+
+    # Define the order parameters
+    contract = Stock(symbol, 'SMART', 'USD')
+
+    if orderType == "LMT":
+        [contractDetails] = ib.reqContractDetails(contract)
+        minTick = contractDetails.minTick * contractDetails.priceMagnifier
+        lmtPrice = price_round(lmtPrice, minTick)
+    
+    order = MarketOrder(action, quantity)
+    if orderType == "LMT":
+        order = LimitOrder(action, quantity, lmtPrice)
+
+    ib.qualifyContracts(contract)
+
+    trade = ib.placeOrder(contract, order)
+    ib.sleep(1)  # some waiting time before saving trade/order status
+
+    #print(trade)
+
+
+# connect to Interactive Broker through TWS localhost
+def ib_connect(port) -> IB:
+    ib = IB()
+    ib.connect('127.0.0.1', port, 1, account=ACCOUNT_ID)
+    #Paper or Live Trading
+    ib.reqMarketDataType(3)
+    return ib
+
+
+async def process_alert(alert_data):
+    msg = alert_data["msg"].encode("latin-1", "backslashreplace").decode("unicode_escape")
+    print("Just print the message:", msg)
+
+    def logError(reqId, errorCode, errorString, contract):
+        print(reqId, errorCode, errorString)
+        with open("error-logs-"+ACCOUNT_ID+".txt", 'a') as logFile:
+            error_msg = f"ReqId:{reqId} received error code:{errorCode} with error description:{errorString}"
+            logFile.write(str(error_msg)+"\n")
+
+    if config.execute_trades:
+        print("Executing IB trade")
+
+        ib_client = ib_connect(PORT)
+
+        ib_client.errorEvent += logError
+
+        execute_ib_trade(ib_client, alert_data)
+
+        ib_client.disconnect()
+
     if config.send_telegram_alerts:
         tg_bot = Bot(token=config.tg_token)
         try:
