@@ -13,7 +13,7 @@ import config
 from handler import *
 
 app = Flask(__name__)
-
+import nest_asyncio
 
 def get_timestamp():
     timestamp = time.strftime("%Y-%m-%d %X")
@@ -21,14 +21,20 @@ def get_timestamp():
 
 
 @app.route("/webhook", methods=["POST"])
-def webhook():
+async def webhook():
     try:
         if request.method == "POST":
             data = request.get_json()
+            print(data)
             key = data["key"]
+            print("key",key)
+            
             if key == config.sec_key:
+                
                 print(get_timestamp(), "Alert Received & Sent!")
-                send_alert(data)
+                
+                await process_alert(data)
+                
                 return "Sent alert", 200
 
             else:
@@ -42,5 +48,7 @@ def webhook():
 
 if __name__ == "__main__":
     from waitress import serve
+    
+    nest_asyncio.apply()
 
     serve(app, host="0.0.0.0", port=80)
