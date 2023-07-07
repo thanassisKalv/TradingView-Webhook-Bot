@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 pyvenv.cfg
 /Scripts
+error-logs-DU5981186.txt
+tradeData.txt
