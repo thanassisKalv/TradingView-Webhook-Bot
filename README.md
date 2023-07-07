@@ -1,28 +1,4 @@
-<p align="center"><a href="https://github.com/fabston/TradingView-Webhook-Bot" target="_blank"><img src="https://raw.githubusercontent.com/fabston/TradingView-Webhook-Bot/master/assets/logo.png"></a></p>
-
-<p align="center">
-    <a href="https://www.python.org/downloads/release/python-380/"><img src="https://img.shields.io/badge/python-3.8-blue.svg?style=plastic" alt="Python version"></a>
-    <a href="https://github.com/fabston/TradingView-Webhook-Bot/blob/master/LICENSE"><img src="https://img.shields.io/github/license/fabston/TradingView-Webhook-Bot?style=plastic" alt="GitHub license"></a>
-    <a href="https://github.com/fabston/TradingView-Webhook-Bot/issues"><img src="https://img.shields.io/github/issues/fabston/TradingView-Webhook-Bot?style=plastic" alt="GitHub issues"></a>
-    <a href="https://github.com/fabston/TradingView-Webhook-Bot/pulls"><img src="https://img.shields.io/github/issues-pr/fabston/TradingView-Webhook-Bot?style=plastic" alt="GitHub pull requests"></a>
-    <br /><a href="https://github.com/fabston/TradingView-Webhook-Bot/stargazers"><img src="https://img.shields.io/github/stars/fabston/TradingView-Webhook-Bot?style=social" alt="GitHub stars"></a>
-    <a href="https://github.com/fabston/TradingView-Webhook-Bot/network/members"><img src="https://img.shields.io/github/forks/fabston/TradingView-Webhook-Bot?style=social" alt="GitHub forks"></a>
-    <a href="https://github.com/fabston/TradingView-Webhook-Bot/watchers"><img src="https://img.shields.io/github/watchers/fabston/TradingView-Webhook-Bot?style=social" alt="GitHub watchers"></a>
-</p>
-
-<p align="center">
-  <a href="#about">About</a>
-  •
-  <a href="#features">Features</a>
-  •
-  <a href="#installation">Installation</a>
-  •
-  <a href="#images">Images</a>
-  •
-  <a href="#how-can-i-help">Help</a>
-</p>
-
-## About
+## About -- > https://github.com/fabston/TradingView-Webhook-Bot/
 The **TradingView Webhook Bot** ⚙️ listens to [TradingView](https://tradingview.com) alerts via [webhooks](https://www.tradingview.com/support/solutions/43000529348-i-want-to-know-more-about-webhooks/) using [flask](https://flask.palletsprojects.com/en/1.1.x/).
 All alerts can be instantly sent to Telegram, Discord, Twitter and/or Email.
 
