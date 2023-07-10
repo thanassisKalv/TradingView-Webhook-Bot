@@ -12,20 +12,30 @@ import tweepy
 from discord_webhook import DiscordEmbed, DiscordWebhook
 from slack_webhook import Slack
 from telegram import Bot
-
+import json
 import config
 
 from ib_insync import *
 
-PORT = 7497
+PORT = 7497    
 ACCOUNT_ID =  "DU5981186"
 
 
+# util function to ensure that 
 def price_round(x, target):
     # print("Rounding:", x, target)
     target = float(1/target)
     rounded = round(x*target)/target
     return rounded
+
+def save_trade_data(tradeData:Trade):
+    saveData = {
+        "contract": str(tradeData.contract),
+        "order": str(tradeData.order),
+        "orderStatus": str(tradeData.orderStatus)
+    }
+    with open("trades-"+ACCOUNT_ID+".json", 'a') as logFile:
+        json.dump(saveData, logFile)
 
 def execute_ib_trade(ib:IB, data):
     # Extract the relevant information from the alert data
@@ -52,36 +62,35 @@ def execute_ib_trade(ib:IB, data):
     trade = ib.placeOrder(contract, order)
     ib.sleep(1)  # some waiting time before saving trade/order status
 
-    #print(trade)
+    save_trade_data(trade)
 
 
 # connect to Interactive Broker through TWS localhost
 def ib_connect(port) -> IB:
     ib = IB()
-    ib.connect('127.0.0.1', port, 1, account=ACCOUNT_ID)
-    #Paper or Live Trading
-    ib.reqMarketDataType(3)
+    ib.connect('host.docker.internal', port, 1, account=ACCOUNT_ID)
+    # data for Paper or Live Trading
+    # ib.reqMarketDataType(3)
     return ib
 
-
-async def process_alert(alert_data):
-    msg = alert_data["msg"].encode("latin-1", "backslashreplace").decode("unicode_escape")
-    print("Just print the message:", msg)
-
-    def logError(reqId, errorCode, errorString, contract):
+def logError(reqId, errorCode, errorString, contract):
         print(reqId, errorCode, errorString)
         with open("error-logs-"+ACCOUNT_ID+".txt", 'a') as logFile:
             error_msg = f"ReqId:{reqId} received error code:{errorCode} with error description:{errorString}"
             logFile.write(str(error_msg)+"\n")
 
-    if config.execute_trades:
+async def process_alert(alertData: dict):
+    msg = alertData["msg"].encode("latin-1", "backslashreplace").decode("unicode_escape")
+    print("Just print the message:", msg)
+
+    if config.execute_ib_trades:
         print("Executing IB trade")
 
         ib_client = ib_connect(PORT)
 
         ib_client.errorEvent += logError
 
-        execute_ib_trade(ib_client, alert_data)
+        execute_ib_trade(ib_client, alertData)
 
         ib_client.disconnect()
 
