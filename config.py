@@ -10,8 +10,11 @@
 # }
 
 sec_key = (
-    ""  # Can be anything. Has to match with "key" in your TradingView alert message
+    "1234"  # Can be anything. Has to match with "key" in your TradingView alert message
 )
+
+#Interactive broker settings
+execute_ib_trades = True
 
 # Telegram Settings
 send_telegram_alerts = False
