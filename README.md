@@ -1,3 +1,4 @@
+## MODE: This fork includes some modifications that enable the Flask server's webhook endpoint to connect to IB using the ib-insync library and place orders according to the payload of TradingView Postback received
 ## About -- > https://github.com/fabston/TradingView-Webhook-Bot/
 The **TradingView Webhook Bot** ⚙️ listens to [TradingView](https://tradingview.com) alerts via [webhooks](https://www.tradingview.com/support/solutions/43000529348-i-want-to-know-more-about-webhooks/) using [flask](https://flask.palletsprojects.com/en/1.1.x/).
 All alerts can be instantly sent to Telegram, Discord, Twitter and/or Email.
